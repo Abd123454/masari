@@ -1,0 +1,449 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ===== المستخدم =====
+model User {
+  id              String          @id @default(cuid())
+  name            String
+  avatar          String?
+  authProvider    String          @default("email")
+  sessionToken    String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  lastActiveDate  DateTime?
+
+  accounts        Account[]
+  settings        Setting?
+  tasks           Task[]
+  habits          Habit[]
+  notes           Note[]
+  goals           Goal[]
+  waterLogs       WaterLog[]
+  moodLogs        MoodLog[]
+  sleepLogs       SleepLog[]
+  journalEntries  JournalEntry[]
+  gratitudeEntries GratitudeEntry[]
+  timeCapsules    TimeCapsule[]
+  dayRatings      DayRating[]
+  wishlistItems   WishlistItem[]
+  anniversaries   Anniversary[]
+  tawjihiSubjects TawjihiSubject[]
+  chineseSessions ChineseSession[]
+  chineseWords    ChineseWord[]
+  fitnessLogs     FitnessLog[]
+  readingBooks    ReadingBook[]
+  aiMemories      AIMemory[]
+  achievements    UserAchievement[]
+  userRPG         UserRPG?
+  financeExpenses FinanceExpense[]
+  financeDeposits FinanceDeposit[]
+  financeBudgets  FinanceBudget[]
+  financeGoals    FinanceGoal[]
+  studySessions   StudySession[]
+  studySubjects   StudySubject[]
+  habitCompletions HabitCompletion[]
+  calendarEvents  CalendarEvent[]
+}
+
+// ===== الحساب =====
+model Account {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String    @default("")
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  firebaseUid   String?
+  authProvider  String    @default("email")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+// ===== الإعدادات =====
+model Setting {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  language  String   @default("ar")
+  theme     String   @default("dark")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ===== المهام =====
+model Task {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  status      String   @default("pending")
+  priority    String   @default("medium")
+  category    String?
+  dueDate     DateTime?
+  dueTime     String?
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ===== العادات =====
+model Habit {
+  id          String   @id @default(cuid())
+  name        String
+  icon        String   @default("✅")
+  color       String   @default("#388BFD")
+  frequency   String   @default("daily")
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  completions HabitCompletion[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model HabitCompletion {
+  id        String   @id @default(cuid())
+  habitId   String
+  habit     Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date      DateTime @default(now())
+  createdAt DateTime @default(now())
+}
+
+// ===== الملاحظات =====
+model Note {
+  id          String   @id @default(cuid())
+  title       String
+  content     String   @default("")
+  color       String   @default("#1a1a2e")
+  isPinned    Boolean  @default(false)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ===== الأهداف =====
+model Goal {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  category    String   @default("personal")
+  progress    Int      @default(0)
+  deadline    DateTime?
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ===== المياه =====
+model WaterLog {
+  id        String   @id @default(cuid())
+  glasses   Int      @default(0)
+  date      DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+// ===== المزاج =====
+model MoodLog {
+  id        String   @id @default(cuid())
+  mood      String
+  note      String?
+  date      DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+// ===== النوم =====
+model SleepLog {
+  id          String   @id @default(cuid())
+  sleepTime   DateTime
+  wakeTime    DateTime
+  quality     String   @default("good")
+  note        String?
+  date        DateTime @default(now())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+}
+
+// ===== اليوميات =====
+model JournalEntry {
+  id        String   @id @default(cuid())
+  content   String   @default("")
+  date      DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ===== الامتنان =====
+model GratitudeEntry {
+  id        String   @id @default(cuid())
+  item1     String   @default("")
+  item2     String   @default("")
+  item3     String   @default("")
+  date      DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+// ===== الكبسولة الزمنية =====
+model TimeCapsule {
+  id          String   @id @default(cuid())
+  title       String
+  message     String
+  mood        String?
+  isOpened    Boolean  @default(false)
+  openDate    DateTime
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ===== تقييم اليوم =====
+model DayRating {
+  id        String   @id @default(cuid())
+  rating    Int
+  note      String?
+  date      DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+// ===== قائمة الأمنيات =====
+model WishlistItem {
+  id        String   @id @default(cuid())
+  title     String
+  completed Boolean  @default(false)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+// ===== الذكريات والمناسبات =====
+model Anniversary {
+  id        String   @id @default(cuid())
+  title     String
+  date      DateTime
+  type      String   @default("personal")
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+// ===== التوجيهي =====
+model TawjihiSubject {
+  id           String   @id @default(cuid())
+  name         String
+  targetHours  Int      @default(0)
+  studiedHours Int      @default(0)
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// ===== الصينية =====
+model ChineseSession {
+  id        String   @id @default(cuid())
+  date      DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+}
+
+model ChineseWord {
+  id        String   @id @default(cuid())
+  chinese   String
+  pinyin    String   @default("")
+  arabic    String   @default("")
+  hskLevel  Int      @default(1)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+// ===== اللياقة =====
+model FitnessLog {
+  id          String   @id @default(cuid())
+  exercise    String
+  sets        Int      @default(0)
+  reps        Int      @default(0)
+  duration    Int      @default(0)
+  calories    Int      @default(0)
+  date        DateTime @default(now())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+}
+
+// ===== القراءة =====
+model ReadingBook {
+  id          String   @id @default(cuid())
+  title       String
+  author      String   @default("")
+  status      String   @default("reading")
+  progress    Int      @default(0)
+  totalPages  Int      @default(0)
+  rating      Int      @default(0)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ===== ذاكرة AI =====
+model AIMemory {
+  id        String   @id @default(cuid())
+  content   String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+// ===== الإنجازات =====
+model Achievement {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  icon        String   @default("🏆")
+  category    String   @default("general")
+  isHidden    Boolean  @default(false)
+  users       UserAchievement[]
+  createdAt   DateTime @default(now())
+}
+
+model UserAchievement {
+  id            String      @id @default(cuid())
+  achievementId String
+  achievement   Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  unlockedAt    DateTime    @default(now())
+}
+
+// ===== RPG =====
+model UserRPG {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  level          Int      @default(1)
+  xp             Int      @default(0)
+  className      String   @default("Warrior")
+  avatarUrl      String?
+  maxHp          Int      @default(100)
+  currentHp      Int      @default(100)
+  strength       Int      @default(10)
+  intelligence   Int      @default(10)
+  wisdom         Int      @default(10)
+  clanId         String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+// ===== المالية =====
+model FinanceExpense {
+  id          String   @id @default(cuid())
+  title       String
+  amount      Float
+  category    String   @default("other")
+  date        DateTime @default(now())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+}
+
+model FinanceDeposit {
+  id          String   @id @default(cuid())
+  title       String
+  amount      Float
+  source      String   @default("other")
+  date        DateTime @default(now())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+}
+
+model FinanceBudget {
+  id          String   @id @default(cuid())
+  category    String
+  limitAmount Float
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+}
+
+model FinanceGoal {
+  id             String   @id @default(cuid())
+  title          String
+  targetAmount   Float
+  currentAmount  Float    @default(0)
+  deadline       DateTime?
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+// ===== الدراسة =====
+model StudySession {
+  id          String   @id @default(cuid())
+  subjectName String
+  duration    Int      @default(0)
+  pomodoros   Int      @default(0)
+  date        DateTime @default(now())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+}
+
+model StudySubject {
+  id          String   @id @default(cuid())
+  name        String
+  color       String   @default("#388BFD")
+  targetHours Int      @default(0)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ===== التقويم =====
+model CalendarEvent {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  date        DateTime
+  time        String?
+  color       String   @default("#388BFD")
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ===== الوسائط =====
+model Media {
+  id        String   @id @default(cuid())
+  type      String   @default("image")
+  url       String
+  thumbnail String?
+  title     String?
+  userId    String
+  createdAt DateTime @default(now())
+}

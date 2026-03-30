@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5CF6"/>
+      <stop offset="100%" style="stop-color:#388BFD"/>
+    </linearGradient>
+  </defs>
+  <rect width="50" height="50" rx="12" fill="url(#g)"/>
+  <text x="25" y="35" text-anchor="middle" fill="white" font-size="28" font-family="Arial" font-weight="bold">م</text>
+  <text x="60" y="35" fill="white" font-size="24" font-family="Arial" font-weight="bold">مساري</text>
+</svg>

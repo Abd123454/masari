@@ -1,0 +1,19 @@
+{
+  "name": "مساري — نظام تشغيل الحياة",
+  "short_name": "مساري",
+  "description": "نظام متكامل لإدارة حياتك اليومية",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050A18",
+  "theme_color": "#050A18",
+  "orientation": "portrait",
+  "dir": "rtl",
+  "lang": "ar",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
